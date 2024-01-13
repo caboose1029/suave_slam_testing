@@ -7,9 +7,9 @@ class buildEnvironment:
         
         pygame.init()
         self.pointCloud = []
-        self.externalMap = pygame.image.load('map.png')
+        self.externalMap = pygame.image.load('map2.png')
         self.mapH, self.mapW = MapDimensions
-        self.MapwindowName = 'RRT path planning'
+        self.MapwindowName = 'Suave Slam Testing'
         pygame.display.set_caption(self.MapwindowName)
         self.map = pygame.display.set_mode((self.mapW, self.mapH))
         self.map.blit(self.externalMap, (0,0))
@@ -22,19 +22,21 @@ class buildEnvironment:
         self.Red = (255, 0, 0)
         self.white = (255, 255, 255)
 
-    def AD2pos(self, distance, angle, robotPosition):
+    def AD2pos(self, distance, angle, height, robotPosition):
         x = distance * math.cos(angle) + robotPosition[0]
         y = - distance * math.sin(angle) + robotPosition[1]
-        return(int(x), int(y))
+        z = height
+        print(z)
+        return(int(x), int(y), z)
 
     def dataStorage(self, data):
         print(len(self.pointCloud))
         for element in data:
-            point = self.AD2pos(element[0], element[1], element[2])
+            point = self.AD2pos(element[0], element[1], element[2], element[3])
             if point not in self.pointCloud:
                 self.pointCloud.append(point)
 
     def show_sensorData(self):
         self.infomap = self.map.copy()
         for point in self.pointCloud:
-            self.infomap.set_at((int(point[0]), int(point[1])), (0, 255, 0))
+            self.infomap.set_at((int(point[0]), int(point[1])), point[2])
